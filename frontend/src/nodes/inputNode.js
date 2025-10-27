@@ -1,47 +1,46 @@
 // inputNode.js
 
-import { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import React from 'react';
+import { BaseNode } from './BaseNode';
+import { TextInput, SelectInput } from '../components/inputs';
 
-export const InputNode = ({ id, data }) => {
-  const [currName, setCurrName] = useState(data?.inputName || id.replace('customInput-', 'input_'));
-  const [inputType, setInputType] = useState(data.inputType || 'Text');
-
-  const handleNameChange = (e) => {
-    setCurrName(e.target.value);
-  };
-
-  const handleTypeChange = (e) => {
-    setInputType(e.target.value);
-  };
-
+const InputNodeComponent = ({ id, state, updateState }) => {
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
-      <div>
-        <span>Input</span>
-      </div>
-      <div>
-        <label>
-          Name:
-          <input 
-            type="text" 
-            value={currName} 
-            onChange={handleNameChange} 
+    <BaseNode.Container variant="input" size="medium">
+      <BaseNode.Header>Input</BaseNode.Header>
+
+      <BaseNode.Content>
+        <BaseNode.Field>
+          <TextInput
+            label="Name"
+            value={state.inputName}
+            onChange={(e) => updateState('inputName', e.target.value)}
           />
-        </label>
-        <label>
-          Type:
-          <select value={inputType} onChange={handleTypeChange}>
-            <option value="Text">Text</option>
-            <option value="File">File</option>
-          </select>
-        </label>
-      </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-value`}
-      />
-    </div>
+        </BaseNode.Field>
+
+        <BaseNode.Field>
+          <SelectInput
+            label="Type"
+            value={state.inputType}
+            onChange={(e) => updateState('inputType', e.target.value)}
+            options={[
+              { value: 'Text', label: 'Text' },
+              { value: 'File', label: 'File' }
+            ]}
+          />
+        </BaseNode.Field>
+      </BaseNode.Content>
+
+      <BaseNode.OutputHandle id="value" nodeId={id} />
+    </BaseNode.Container>
   );
-}
+};
+
+// Define default state
+InputNodeComponent.defaultState = {
+  inputName: (id) => id.replace('customInput-', 'input_'),
+  inputType: 'Text'
+};
+
+// Export with state management
+export const InputNode = BaseNode.withState(InputNodeComponent);

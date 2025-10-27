@@ -1,34 +1,26 @@
 // llmNode.js
 
-import { Handle, Position } from 'reactflow';
+import React from 'react';
+import { BaseNode } from './BaseNode';
 
-export const LLMNode = ({ id, data }) => {
-
+const LLMNodeComponent = ({ id }) => {
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-system`}
-        style={{top: `${100/3}%`}}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-prompt`}
-        style={{top: `${200/3}%`}}
-      />
-      <div>
-        <span>LLM</span>
-      </div>
-      <div>
-        <span>This is a LLM.</span>
-      </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-response`}
-      />
-    </div>
+    <BaseNode.Container variant="llm" size="medium">
+      <BaseNode.InputHandle id="system" nodeId={id} style={{ top: '33%' }} />
+      <BaseNode.InputHandle id="prompt" nodeId={id} style={{ top: '67%' }} />
+
+      <BaseNode.Header>LLM</BaseNode.Header>
+
+      <BaseNode.Content>
+        <BaseNode.CustomContent>
+          This is a LLM.
+        </BaseNode.CustomContent>
+      </BaseNode.Content>
+
+      <BaseNode.OutputHandle id="response" nodeId={id} />
+    </BaseNode.Container>
   );
-}
+};
+
+// Export without state management (no fields)
+export const LLMNode = LLMNodeComponent;

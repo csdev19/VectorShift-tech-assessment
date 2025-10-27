@@ -1,47 +1,46 @@
 // outputNode.js
 
-import { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import React from 'react';
+import { BaseNode } from './BaseNode';
+import { TextInput, SelectInput } from '../components/inputs';
 
-export const OutputNode = ({ id, data }) => {
-  const [currName, setCurrName] = useState(data?.outputName || id.replace('customOutput-', 'output_'));
-  const [outputType, setOutputType] = useState(data.outputType || 'Text');
-
-  const handleNameChange = (e) => {
-    setCurrName(e.target.value);
-  };
-
-  const handleTypeChange = (e) => {
-    setOutputType(e.target.value);
-  };
-
+const OutputNodeComponent = ({ id, state, updateState }) => {
   return (
-    <div style={{ width: 200, height: 80, border: '1px solid black' }}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-value`}
-      />
-      <div>
-        <span>Output</span>
-      </div>
-      <div>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={currName}
-            onChange={handleNameChange}
+    <BaseNode.Container variant="output" size="medium">
+      <BaseNode.InputHandle id="value" nodeId={id} />
+
+      <BaseNode.Header>Output</BaseNode.Header>
+
+      <BaseNode.Content>
+        <BaseNode.Field>
+          <TextInput
+            label="Name"
+            value={state.outputName}
+            onChange={(e) => updateState('outputName', e.target.value)}
           />
-        </label>
-        <label>
-          Type:
-          <select value={outputType} onChange={handleTypeChange}>
-            <option value="Text">Text</option>
-            <option value="File">Image</option>
-          </select>
-        </label>
-      </div>
-    </div>
+        </BaseNode.Field>
+
+        <BaseNode.Field>
+          <SelectInput
+            label="Type"
+            value={state.outputType}
+            onChange={(e) => updateState('outputType', e.target.value)}
+            options={[
+              { value: 'Text', label: 'Text' },
+              { value: 'File', label: 'Image' }
+            ]}
+          />
+        </BaseNode.Field>
+      </BaseNode.Content>
+    </BaseNode.Container>
   );
-}
+};
+
+// Define default state
+OutputNodeComponent.defaultState = {
+  outputName: (id) => id.replace('customOutput-', 'output_'),
+  outputType: 'Text'
+};
+
+// Export with state management
+export const OutputNode = BaseNode.withState(OutputNodeComponent);
